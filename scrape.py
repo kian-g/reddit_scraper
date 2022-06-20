@@ -3,11 +3,11 @@
 try:
     import praw
 except ImportError:
-    print "Unable to find praw. see https://github.com/praw-dev/praw"
+    print("Unable to find praw. see https://github.com/praw-dev/praw")
     raise
 
 from time import sleep
-from urllib import urlopen
+from urllib.request import urlopen
 import os
 import sys
 import datetime
