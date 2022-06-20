@@ -1,6 +1,7 @@
 import os
 import json
-import tkMessageBox
+import tkinter
+from tkinter import messagebox
 
 class Settings(object):
     basename = 'config.json'
