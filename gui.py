@@ -1,13 +1,7 @@
-# gui.py
-
 import tkinter
-#import tkFileDialog
 from tkinter import filedialog as tkFileDialog
 
-# import tkSimpleDialog
 from tkinter import simpledialog as tkSimpleDialog
-# import tkMessageBox
-# from tkinter import messagebox as tkMessageBox
 import tkinter.messagebox
 
 import requests
@@ -125,34 +119,28 @@ class ScraperWindow(object):
 
     def add_groupings_pane(self, root):
         pane = tkinter.Frame(root)
-        # List of directories,
         self.grouping_listbox = tkinter.Listbox(pane)
         self.grouping_listbox.grid(row=0, column=0, sticky=tkinter.N)
         self.grouping_listbox.bind('<Button-1>', self.grouping_listbox_click)
 
         row_1_frame = tkinter.Frame(pane)
-
-        # Add directory button,        
+   
         add_dir_button = tkinter.Button(row_1_frame, text=" + ", command=self.add_directory)
         add_dir_button.pack(side=tkinter.LEFT)
 
-        # Reomve directory button,
         del_dir_button = tkinter.Button(row_1_frame, text=" - ", command=self.del_directory)
         del_dir_button.pack(side=tkinter.LEFT)
-        
-        # Enable/Disable button
+
         self.enable_button = tkinter.Button(row_1_frame, text="Disable", command=self.enable)
         self.enable_button.pack(side=tkinter.LEFT)
 
         row_1_frame.grid(row=1, column=0)
-        
-        # Scrape all button
+
         scrape_all_button = tkinter.Button(pane, text="Scrape All", command=self.scrape_all)
         scrape_all_button.grid(row=2, column=0)
 
         row_3_frame = tkinter.Frame(pane)
-        
-        # Load/Save
+
         load_button = tkinter.Button(row_3_frame, text="Load", command=self.load)
         load_button.pack(side = tkinter.LEFT)
 
@@ -167,22 +155,18 @@ class ScraperWindow(object):
     def add_subreddits_pane(self, root):
         pane = tkinter.Frame(root)
 
-        # List of subreddits,
         self.subreddit_listbox = tkinter.Listbox(pane)
         self.subreddit_listbox.grid(row=0, column=0, sticky=tkinter.N)
         self.subreddit_listbox.bind('<Button-1>', self.subreddit_listbox_click)
 
         row_1_frame = tkinter.Frame(pane)
 
-        # Add subreddit button
         add_sub_button = tkinter.Button(row_1_frame, text=" + ", command=self.add_subreddit)
         add_sub_button.pack(side=tkinter.LEFT)
 
-        # Remove subreddit button
         del_sub_button = tkinter.Button(row_1_frame, text=" - ", command=self.del_subreddit)
         del_sub_button.pack(side=tkinter.LEFT)
 
-        # Enable/Disable button
         self.enable_sub_button = tkinter.Button(row_1_frame, text="Disable", command=self.enable_sub)
         self.enable_sub_button.pack(side=tkinter.LEFT)
 
@@ -190,8 +174,6 @@ class ScraperWindow(object):
 
         self.scrape_dir_button = tkinter.Button(pane, text="Scrape Directory", command=self.scrape_current_dir)
         self.scrape_dir_button.grid(row=2, column=0)
-        
-        # Create folder for each subreddit (checkbox)
 
         row_3_frame = tkinter.Frame(pane)
         
@@ -208,11 +190,9 @@ class ScraperWindow(object):
 
     def add_details_pane(self, root):
         pane = tkinter.Frame(root, width=500)
-        # Subreddit name
         self.subreddit_name_label = tkinter.Label(pane, text='', anchor=tkinter.N)
         self.subreddit_name_label.grid(row=0, column=0)
 
-        # Number of files to download (INC/DEC)
         row_1_frame = tkinter.Frame(pane)
         
         self.number_of_files_label = tkinter.Label(row_1_frame, text='Files to Download:')
@@ -223,7 +203,6 @@ class ScraperWindow(object):
 
         row_1_frame.grid(row=1, column=0)
 
-        # File types to include (list box?) (ADD/REM)
         self.file_types_label = tkinter.Label(pane, text="Include these extensions:")
         self.file_types_label.grid(row=2, column=0)
         
@@ -239,11 +218,7 @@ class ScraperWindow(object):
         del_ext_button.pack(side=tkinter.LEFT)
 
         row_4_frame.grid(row=4, column=0)
-        
-        # Last scraped (LABEL)
-        # Open folder in finder/explorer (BUTTON)
-        
-        # Scrape now button
+
         self.scrape_now_button = tkinter.Button(pane, text="Scrape Subreddit", command=self.scrape_current_sub)
         self.scrape_now_button.grid(row=5, column=0)
 
@@ -286,13 +261,11 @@ class ScraperWindow(object):
         return self.grouping[self.state.subreddit]
 
     def update_gui(self):
-        ## Grouping listbox
         desired_grouping_listbox = [group.shortname for group in self.settings.groupings]
         if not desired_grouping_listbox:
             desired_grouping_listbox = ['<Directories>']
         self._listbox_update(self.grouping_listbox, desired_grouping_listbox)
 
-        # Color
         for i in range(self.grouping_listbox.size()):
             grp = self.settings[self.grouping_listbox.get(i)]
             if grp is None or grp.enabled:
@@ -305,14 +278,12 @@ class ScraperWindow(object):
             self.grouping_listbox.itemconfig(index, bg=SELECTION_COLOR)
             self.grouping_listbox.selection_clear(0, tkinter.END)
 
-        ## Enable buttons
         self.enable_button.config(text='      ' if not self.grouping else
                                   'Disable' if self.grouping.enabled else 'Enable')
         self.enable_sub_button.config(text='      ' if not self.subreddit else
                                       'Disable' if self.subreddit.enabled else 'Enable')
 
 
-        ## Subreddit listbox
         if self.grouping is None:
             desired_subreddit_listbox = ['<Subreddits>']
         else:
@@ -321,7 +292,6 @@ class ScraperWindow(object):
             desired_subreddit_listbox = ['<Subreddits>']
         self._listbox_update(self.subreddit_listbox, desired_subreddit_listbox)
 
-        # Color
         for i in range(self.subreddit_listbox.size()):
             sub = None if not self.grouping else self.grouping[self.state.subreddit]
             if sub is None or sub.enabled:
@@ -334,14 +304,11 @@ class ScraperWindow(object):
             self.subreddit_listbox.itemconfig(index, bg=SELECTION_COLOR)
             self.subreddit_listbox.selection_clear(0, tkinter.END)
 
-        # Checkbox
         if self.grouping:
             self.persubvar.set(self.grouping.subdir_per_subreddit)
 
-        ## Details Frame
         if self.subreddit is not None:
             self.subreddit_name_label.config(text='/r/'+self.state.subreddit)
-            #self._entry_update(self.number_of_files_entry, self.ubreddit.num_files)
             desired_filetypes = self.subreddit.file_types
             self._listbox_update(self.file_types_listbox, desired_filetypes)
         else:
@@ -350,7 +317,6 @@ class ScraperWindow(object):
             #self._entry_update(self.number_of_files_entry, '')
             self._listbox_update(self.file_types_listbox, ['<Extensions>'])
 
-        ## Color
         for i in range(self.file_types_listbox.size()):
             self.file_types_listbox.itemconfig(i, bg=BLANK_COLOR)
         if self.filetype:
@@ -504,8 +470,6 @@ class GUIState(object):
 
 def reveal(direc, raised=[False]):
     if raised[0]:
-        # No need to try again - we already know an exception will
-        # be raised.
         return
     if not os.path.exists(direc):
         raise ValueError("Could not find %s" % direc)
@@ -515,5 +479,4 @@ def reveal(direc, raised=[False]):
         else:
             subprocess.call(['open', '-R', direc])
     except:
-        # Non-unixy
         raised[0] = True
